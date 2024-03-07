@@ -1,0 +1,39 @@
+networks:
+  roboshop:
+    driver: bridge
+services:
+  mongodb:
+    image: mongodb:v1
+    container_name: mongodb-container
+    networks:
+      - roboshop 
+  catalogue:
+    image: catalogue:v1
+    container_name: catalogue-container
+    networks:
+      - roboshop
+    depends_on:
+      - mongodb
+  redis:
+    image: redis:v1
+    container_name: redis-container
+    networks:
+      - roboshop
+  user:
+    image: user:v1
+    container_name: user-container
+    networks:
+      - roboshop
+    depends_on:
+    - mongodb
+    - redis
+  web:
+    image: web:v1
+    container_name: web-container
+    networks:
+      - roboshop
+    ports:
+      - "80:80"
+    depends_on:
+    - catalogue
+    - user
